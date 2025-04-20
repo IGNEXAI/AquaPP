@@ -3,9 +3,11 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Avalonia.Markup.Xaml;
 using H2Optim.ViewModels;
 using H2Optim.Views;
+using HarfBuzzSharp;
 
 namespace H2Optim;
 

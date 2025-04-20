@@ -9,8 +9,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Models\"/>
+        <Folder Include="AI\" />
+        <Folder Include="Controls\" />
         <AvaloniaResource Include="Assets\**"/>
+        <Folder Include="Core\" />
+        <Folder Include="FileStorage\" />
+        <Folder Include="Logging\" />
+        <Folder Include="Models\Drawer\" />
+        <Folder Include="Services\" />
+        <Folder Include="Tests\" />
+        <Folder Include="Themes\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -24,5 +32,6 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta2" />
     </ItemGroup>
 </Project>
