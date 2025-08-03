@@ -1,0 +1,58 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:AquaPP.ViewModels"
+             xmlns:ui="clr-namespace:AquaPP.Views.ui"
+             xmlns:records="clr-namespace:AquaPP.Models.Records"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AquaPP.Views.CustomSplitView"
+             x:DataType="viewModels:CustomSplitViewModel">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <viewModels:CustomSplitViewModel />
+    </Design.DataContext>
+    
+    <SplitView IsPaneOpen="{Binding IsSidePanelOpen}"
+               DisplayMode="CompactInline"
+               CompactPaneLength=""
+               OpenPaneLength="220"
+               >
+
+        <SplitView.Pane >
+                <Grid Background="LightBlue">
+                    <ListBox ItemsSource="{Binding Pages}"
+                             SelectedItem="{Binding SelectedPage}"
+                             Background="Transparent"
+                             BorderBrush="Transparent"
+                             SelectionMode="Single">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="records:Page">
+                                <ui:PageNavigationItem />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerTheme>
+                        </ListBox.ItemContainerTheme>
+                    </ListBox>                <ToggleButton Name="SidePanelToggleButton"
+                                  IsChecked="{Binding IsSidePanelOpen, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Bottom"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Padding="4"
+                                  Margin="4"
+                                  Width="40"
+                                  Height="40">
+                        <Svg Name="HamburgerButton" Path="/Assets/hamburger-button-svgrepo-com.svg" />
+                    </ToggleButton>
+                </Grid>
+        </SplitView.Pane>
+        
+        <ContentControl Content="{Binding CurrentPage}"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch" />
+        
+    </SplitView>
+</UserControl>

@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:AquaPP.Models"
+             xmlns:converters="clr-namespace:AquaPP.Converters"
+             xmlns:chat="clr-namespace:AquaPP.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AquaPP.Views.Pages.ChatView"
+             x:DataType="chat:ChatViewModel">
+    
+    <UserControl.Resources>
+        <converters:SenderToBrushConverter x:Key="SenderToBrushConverterInstance" /> 
+        <converters:SenderToAlignmentConverter x:Key="SenderToAlignmentConverterInstance" /> 
+        <converters:SenderToIconData x:Key="SenderToIconDataConverterInstance" /> 
+    </UserControl.Resources>
+    
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <chat:ChatViewModel />
+    </Design.DataContext>
+    
+            <Grid RowDefinitions="*,Auto" >
+                    <ScrollViewer x:Name="ChatScrollViewer" Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                        <ListBox ItemsSource="{Binding Messages}">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </ListBox.Styles>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:ChatMessage">
+                                    <StackPanel>
+                                        <PathIcon Data="{Binding Sender, Converter={StaticResource SenderToIconDataConverterInstance}}" HorizontalAlignment="{Binding Sender, Converter={StaticResource SenderToAlignmentConverterInstance}}"></PathIcon>
+                                        <Border Margin="5" CornerRadius="5"
+                                                MaxWidth="450"
+                                                HorizontalAlignment="{Binding Sender, Converter={StaticResource SenderToAlignmentConverterInstance}}"
+                                                Background="{Binding Sender, Converter={StaticResource SenderToBrushConverterInstance}}">
+                                            <TextBlock Text="{Binding Content}" FontSize="15" Margin="10" TextWrapping="Wrap" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                </ScrollViewer>
+
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                    <TextBox Text="{Binding Message, Mode=TwoWay}" Grid.Column="0" Margin="5" />
+                    <Button Command="{Binding SendCommand}" Grid.Column="1" Content="Send" Margin="5" />
+                </Grid>
+            </Grid>
+    
+</UserControl>

@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.2">
+            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+        <PackageReference Include="LoadingIndicators.Avalonia" Version="11.0.11.1" />
+        <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+        <PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+        <PackageReference Include="Microsoft.SemanticKernel" Version="1.61.0" />
+        <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.61.0" />
+        <PackageReference Include="Microsoft.SemanticKernel.Connectors.OpenAI" Version="1.61.0" />
+        <PackageReference Include="Serilog" Version="4.3.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.1" />
+        <PackageReference Include="Splat" Version="15.4.1" />
+        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.0.2" />
+        <PackageReference Include="UnitsNet" Version="5.75.0" />
+        <PackageReference Include="Xaml.Behaviors.Avalonia" Version="11.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ViewModels\WaterQuality\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="App.axaml.cs">
+        <DependentUpon>App.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\CustomSplitView.axaml.cs">
+        <DependentUpon>CustomSplitView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\ui\PageNavigationItem.axaml.cs">
+        <DependentUpon>PageNavigationItem.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\DashboardView.axaml.cs">
+        <DependentUpon>DashboardView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\SettingsView.axaml.cs">
+        <DependentUpon>SettingsView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\SimpleAppView.axaml.cs">
+        <DependentUpon>SimpleAppView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Pages\ChatView.axaml.cs">
+        <DependentUpon>ChatView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+</Project>

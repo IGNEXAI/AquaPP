@@ -1,0 +1,19 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="AquaPP.Views.ui.PageNavigationItem"
+             xmlns:records="clr-namespace:AquaPP.Models.Records"
+             x:DataType="records:Page">
+    
+    <Design.DataContext>
+        <records:Page Name="Preview Item" LightIconData="/Assets/hamburger-button-svgrepo-com.svg" DarkIconData="/Assets/hamburger-button-svgrepo-com.svg" />
+    </Design.DataContext>
+    
+    <StackPanel Orientation="Horizontal" Spacing="10">
+        <PathIcon Data="{Binding LightIconData}"  Foreground="Blue" />
+        <Svg Path="{Binding LightIconData}" Width="20" Height="20"/> 
+        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="Black" />
+    </StackPanel>
+</UserControl>

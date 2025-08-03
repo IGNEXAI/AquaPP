@@ -1,0 +1,29 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AquaPP.App"
+             xmlns:local="using:AquaPP"
+             RequestedThemeVariant="Light">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://LoadingIndicators.Avalonia/LoadingIndicators.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Light" Accent="#ff1d4b6b" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#ff78bbc8" BaseMedium="#ff308091" BaseMediumHigh="#ff00596c" BaseMediumLow="#ff186d7e" ChromeAltLow="#ff00596c" ChromeBlackHigh="Black" ChromeBlackLow="#ff78bbc8" ChromeBlackMedium="#ff00596c" ChromeBlackMediumLow="#ff308091" ChromeDisabledHigh="#ff78bbc8" ChromeDisabledLow="#ff308091" ChromeGray="#ff186d7e" ChromeHigh="#ff78bbc8" ChromeLow="#ffbde9f2" ChromeMedium="#ffafe0ea" ChromeMediumLow="#ffbde9f2" ChromeWhite="White" ListLow="#ffafe0ea" ListMedium="#ff78bbc8" RegionColor="#fff5f0ff" />
+                <ColorPaletteResources x:Key="Dark" Accent="#ff125989" AltHigh="Black" AltLow="Black" AltMedium="Black" AltMediumHigh="Black" AltMediumLow="Black" BaseHigh="White" BaseLow="#ff2f93b8" BaseMedium="#ff8bcce3" BaseMediumHigh="#ffa2daee" BaseMediumLow="#ff5dafce" ChromeAltLow="#ffa2daee" ChromeBlackHigh="Black" ChromeBlackLow="#ffa2daee" ChromeBlackMedium="Black" ChromeBlackMediumLow="Black" ChromeDisabledHigh="#ff2f93b8" ChromeDisabledLow="#ff8bcce3" ChromeGray="#ff74bed8" ChromeHigh="#ff74bed8" ChromeLow="#ff094d79" ChromeMedium="#ff135f89" ChromeMediumLow="#ff2682a8" ChromeWhite="White" ListLow="#ff135f89" ListMedium="#ff2f93b8" RegionColor="#ff1b262c" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    </Application.Styles>
+</Application>
