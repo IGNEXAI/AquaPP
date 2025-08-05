@@ -12,7 +12,7 @@ public partial class DataEntryView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGridPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         // We only care about left-clicks
@@ -53,11 +53,11 @@ public partial class DataEntryView : UserControl
 
         // Set the grid's current item and column to the one that was clicked
         grid.SelectedItem = row.DataContext;
-            
+
         // Begin the edit
         if (grid.BeginEdit())
         {
             e.Handled = true;
         }
     }
-    }
+}

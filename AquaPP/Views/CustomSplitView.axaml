@@ -2,57 +2,123 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              xmlns:viewModels="clr-namespace:AquaPP.ViewModels"
-             xmlns:ui="clr-namespace:AquaPP.Views.ui"
-             xmlns:records="clr-namespace:AquaPP.Models.Records"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             x:Name="SplitViewControl"
+             xmlns:pages="clr-namespace:AquaPP.ViewModels.Pages"
+             xmlns:pagesViews="clr-namespace:AquaPP.Views.Pages"
+             xmlns:converters="clr-namespace:AquaPP.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AquaPP.Views.CustomSplitView"
              x:DataType="viewModels:CustomSplitViewModel">
-
+    
+    <UserControl.Resources>
+        <pages:SimpleAppViewModel x:Key="SimpleAppViewModel" />
+        <pages:ChatViewModel x:Key="AgentViewModel" />
+        <pages:DataEntryViewModel x:Key="DataEntryViewModel" />
+        <pages:SettingsViewModel x:Key="SettingsViewModel" />
+        <pages:DashboardViewModel x:Key="DashboardViewModel" />
+        <converters:ButtonCommandParamsConverter x:Key="ButtonToUrlOpenConverterInstance" />
+    </UserControl.Resources>
+    
+    
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <viewModels:CustomSplitViewModel />
     </Design.DataContext>
-    
-    <SplitView IsPaneOpen="{Binding IsSidePanelOpen}"
-               DisplayMode="CompactInline"
-               CompactPaneLength=""
-               OpenPaneLength="220"
-               >
 
-        <SplitView.Pane >
-                <Grid Background="LightBlue">
-                    <ListBox ItemsSource="{Binding Pages}"
-                             SelectedItem="{Binding SelectedPage}"
-                             Background="Transparent"
-                             BorderBrush="Transparent"
-                             SelectionMode="Single">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate x:DataType="records:Page">
-                                <ui:PageNavigationItem />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerTheme>
-                        </ListBox.ItemContainerTheme>
-                    </ListBox>                <ToggleButton Name="SidePanelToggleButton"
-                                  IsChecked="{Binding IsSidePanelOpen, Mode=TwoWay}"
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Bottom"
-                                  Background="Transparent"
-                                  BorderThickness="0"
-                                  Padding="4"
-                                  Margin="4"
-                                  Width="40"
-                                  Height="40">
-                        <Svg Name="HamburgerButton" Path="/Assets/hamburger-button-svgrepo-com.svg" />
-                    </ToggleButton>
-                </Grid>
-        </SplitView.Pane>
+    <suki:SukiSideMenu  x:Name="MenuControl"
+                        IsSearchEnabled="False">
+        <suki:SukiSideMenu.Items >
+            <suki:SukiSideMenuItem FontWeight="DemiBold" Header="Home">
+                <suki:SukiSideMenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-house" />
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <pagesViews:DashboardView DataContext="{StaticResource DashboardViewModel}" />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            <suki:SukiSideMenuItem FontWeight="DemiBold" Header="Example">
+                <suki:SukiSideMenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-flag" />
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <pagesViews:SimpleAppView DataContext="{StaticResource SimpleAppViewModel}" />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            
+            <suki:SukiSideMenuItem FontWeight="DemiBold" Header="Agent">
+                <suki:SukiSideMenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-user-tie" />
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <pagesViews:ChatView DataContext="{StaticResource AgentViewModel}" />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            
+            <suki:SukiSideMenuItem FontWeight="DemiBold" Header="Data Entry">
+                <suki:SukiSideMenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-clipboard-list" />
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <pagesViews:DataEntryView DataContext="{StaticResource DataEntryViewModel}" />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            <suki:SukiSideMenuItem FontWeight="DemiBold" Header="Settings">
+                <suki:SukiSideMenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-gear" />
+                </suki:SukiSideMenuItem.Icon>
+                <suki:SukiSideMenuItem.PageContent>
+                    <pagesViews:SettingsView DataContext="{StaticResource SettingsViewModel}" />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+        </suki:SukiSideMenu.Items>
         
-        <ContentControl Content="{Binding CurrentPage}"
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Stretch" />
-        
-    </SplitView>
+        <suki:SukiSideMenu.HeaderContent>
+            <Image Margin="20" Height="100" Width="100" 
+                   Stretch="UniformToFill"
+                   Source="/Assets/aqua-plus-plus.png"/>
+        </suki:SukiSideMenu.HeaderContent>
+
+        <suki:SukiSideMenu.FooterContent >
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                <StackPanel.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Command" Value="{Binding OpenUrlCommand}" />
+                    </Style>
+                    <Style Selector="i|Icon">
+                        <Setter Property="Width" Value="25" />
+                        <Setter Property="Height" Value="25" />
+                    </Style>
+                </StackPanel.Styles>
+                <Button Classes="Flat Rounded" ToolTip.Tip="Visit our website for more information.">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource ButtonToUrlOpenConverterInstance}" >
+                            <Binding RelativeSource="{RelativeSource Self}" />
+                            <Binding Source="https://github.com/kikipoulet/SukiUI" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <i:Icon Value="fa-solid fa-question"  HorizontalAlignment="Center"/>
+                </Button>
+                <Button Classes="Flat Rounded" ToolTip.Tip="Follow us on Facebook.">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource ButtonToUrlOpenConverterInstance}" >
+                            <Binding RelativeSource="{RelativeSource Self}" />
+                            <Binding Source="https://github.com/kikipoulet/SukiUI" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center"/>
+                </Button>
+                <Button Classes="Flat Rounded" ToolTip.Tip="Follow us on LinkedIn.">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource ButtonToUrlOpenConverterInstance}" >
+                            <Binding RelativeSource="{RelativeSource Self}" />
+                            <Binding Source="https://github.com/kikipoulet/SukiUI" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <i:Icon Value="fa-brands fa-linkedin" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </suki:SukiSideMenu.FooterContent>
+    </suki:SukiSideMenu>
 </UserControl>

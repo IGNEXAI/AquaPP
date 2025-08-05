@@ -10,7 +10,9 @@ public enum MessageSender
 
 public partial class ChatMessage : ObservableObject
 {
-    [ObservableProperty]
-    private string? _content;
+    [ObservableProperty] private string? _content;
+
+    [ObservableProperty] private bool _isLoading;
+    
     public MessageSender Sender { get; set; }
 }

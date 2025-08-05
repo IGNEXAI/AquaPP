@@ -14,7 +14,9 @@
     <StackPanel>
         <TextBlock Text="Settings" FontSize="24" HorizontalAlignment="Center" Margin="10"/>
         <ComboBox ItemsSource="{Binding Themes}"
+                  Width="200"
                   SelectedItem="{Binding SelectedTheme}"
+                  HorizontalAlignment="Left"
                   Margin="10"/>
     </StackPanel>
     

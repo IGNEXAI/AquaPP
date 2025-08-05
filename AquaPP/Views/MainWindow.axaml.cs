@@ -5,11 +5,12 @@ using AquaPP.Services;
 using Avalonia;
 using Avalonia.Controls;
 using Splat;
+using SukiUI.Controls;
 using ILogger = Serilog.ILogger;
 
 namespace AquaPP.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : SukiWindow
 {
     private readonly ILogger _logger;
     

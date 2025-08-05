@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:avalonia="clr-namespace:LoadingIndicators.Avalonia;assembly=LoadingIndicators.Avalonia"
              xmlns:pages="clr-namespace:AquaPP.ViewModels.Pages"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AquaPP.Views.Pages.SimpleAppView"
              x:DataType="pages:SimpleAppViewModel">
@@ -23,7 +23,7 @@
                        Text="Temperature Converter" />
         </Border>
 
-        <avalonia:LoadingIndicator IsActive="{Binding IsBusy}" Mode="Arcs" SpeedRatio="1.2"
+        <suki:Loading IsVisible="{Binding IsBusy}"
                              VerticalAlignment="Center" HorizontalAlignment="Center" Width="10" Height="10" />
 
         <Grid ShowGridLines="False" Margin="5" ColumnDefinitions="*,*" RowDefinitions="*,*,*,*,*,*">

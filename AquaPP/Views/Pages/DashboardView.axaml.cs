@@ -1,9 +1,13 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+using Avalonia.Markup.Xaml;
 
 namespace AquaPP.Views.Pages;
 
-public class DashboardView : UserControl
+public partial class DashboardView : UserControl
 {
+    public DashboardView()
+    {
+        InitializeComponent();
+    }
 }

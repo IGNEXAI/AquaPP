@@ -1,16 +1,73 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:AquaPP.Views.Pages">
-    <Design.PreviewWith>
-        <controls:DashboardView />
-    </Design.PreviewWith>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AquaPP.Views.Pages.DashboardView">
 
-    <Style Selector="controls|DashboardView">
-        <!-- Set Defaults -->
-        <Setter Property="Template">
-            <ControlTemplate>
-                <TextBlock Text="Templated Control" />
-            </ControlTemplate>
-        </Setter>
-    </Style>
-</Styles>
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Border Grid.Row="0" Background="#3B4252" Padding="15">
+            <TextBlock Text="Dashboard Overview"
+                       FontSize="24"
+                       FontWeight="Bold" />
+        </Border>
+
+        <Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto" RowSpacing="20">
+
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*" ColumnSpacing="15">
+
+                <Border Grid.Column="0" CornerRadius="8" Padding="15">
+                    <Border Background="blue">
+                        <StackPanel>
+                            <TextBlock Text="Total Readings Today" Opacity="0.8" />
+                            <TextBlock Text="125" FontSize="32" FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                </Border>
+
+                <Border Grid.Column="1" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="Average pH Level" Opacity="0.8" />
+                        <TextBlock Text="7.2" FontSize="32" FontWeight="Bold" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="Last Data Sync" Opacity="0.8" />
+                        <TextBlock Text="5 mins ago" FontSize="32" FontWeight="Bold" />
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="2*, *" ColumnSpacing="15">
+
+                <Border Grid.Column="0" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="Critical Alerts" FontWeight="Bold" FontSize="18" />
+                        <TextBlock Text="[Your Alerts List goes here]" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="Historical Data Chart" FontWeight="Bold" FontSize="18" />
+                        <TextBlock Text="[Your Chart Control goes here]" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+
+            <Border Grid.Row="2" CornerRadius="8" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Recent Activity" FontWeight="Bold" FontSize="18" />
+                    <TextBlock Text="[Your Activity Feed goes here]" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </Grid>
+</UserControl>
