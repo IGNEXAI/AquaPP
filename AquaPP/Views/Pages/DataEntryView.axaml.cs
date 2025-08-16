@@ -1,16 +1,68 @@
 using System.Linq;
+using System.Linq.Dynamic.Core;
+using AquaPP.Models;
+using AquaPP.ViewModels.Pages;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
+using Splat;
+using ILogger = Serilog.ILogger;
 
 namespace AquaPP.Views.Pages;
 
 public partial class DataEntryView : UserControl
 {
+    
+    private readonly ILogger _logger;
+    
     public DataEntryView()
     {
+        _logger = Locator.Current.GetService<ILogger>()!;
+        
         InitializeComponent();
+        DataContextChanged += OnDataContextChanged;
+    }
+
+    private void OnDataContextChanged(object? sender, System.EventArgs e)
+    {
+        if (DataContext is DataEntryViewModel viewModel)
+        {
+            viewModel.RequestScrollToBottom += ViewModel_RequestScrollToBottom;
+        }
+    }
+    
+    private void ViewModel_RequestScrollToBottom()
+    {
+        var items = ReadingsDataGrid.ItemsSource.ToDynamicList(); 
+        if (items.Count > 0)
+        {
+            ReadingsDataGrid.ScrollIntoView(items[^1], null);
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (DataContext is DataEntryViewModel viewModel)
+        {
+            viewModel.RequestScrollToBottom -= ViewModel_RequestScrollToBottom;
+        }
+    }
+    
+    private void OnDataGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is not DataEntryViewModel viewModel) return;
+        
+        _logger.Information("OnDataGridSelectionChanged event fired successfully");
+        viewModel.SelectedReadings.Clear();
+        foreach (var item in ReadingsDataGrid.SelectedItems)
+        {
+            if (item is WaterQualityReading reading)
+            {
+                viewModel.SelectedReadings.Add(reading);
+            }
+        }
     }
 
     private void DataGridPointerPressed(object? sender, PointerPressedEventArgs e)

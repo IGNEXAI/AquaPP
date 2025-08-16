@@ -30,13 +30,14 @@
         </i:Icon>
     </sukiUi:SukiWindow.LogoContent>
     
+    <sukiUi:SukiWindow.Hosts>
+        <sukiUi:SukiToastHost Name="ToastHost" />
+    </sukiUi:SukiWindow.Hosts>
+
+    
     <Panel>
         <Grid Margin="20" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*">
-            <TextBlock Grid.Row="0" Text="Welcome to the Dashboard" FontSize="24" FontWeight="Bold" />
-            <TextBlock Grid.Row="1" Text="Here is the user information:" />
-
-            <views:CustomSplitView Grid.Row="2" Grid.RowSpan="10" />
-
+            <views:CustomSplitView Grid.RowSpan="10" />
         </Grid>
         
         <StackPanel Name="ToastContainer"
@@ -47,4 +48,4 @@
                     Margin="20"
                     MaxWidth="350"/>
     </Panel>
-</sukiUi:SukiWindow>
+</sukiUi:SukiWindow> 

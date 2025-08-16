@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using AquaPP.AI;
-using AquaPP.Controls;
 using AquaPP.Models;
 using AquaPP.Services;
-using Avalonia.Media;
 using Avalonia.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using ReactiveUI;
 using Splat;
@@ -22,6 +21,8 @@ public partial class ChatViewModel : ViewModelBase
     private readonly Agent _agent;
     private string _message = string.Empty;
     private readonly ILogger _logger;
+    private readonly ISukiToastService _toastService; 
+    
 
     public ObservableCollection<ChatMessage> Messages { get; }
 
@@ -30,6 +31,8 @@ public partial class ChatViewModel : ViewModelBase
     public ChatViewModel()
     {
         _logger = Locator.Current.GetService<ILogger>()!;
+        _toastService = App.Services.GetRequiredService<ISukiToastService>();
+        
         _agent = new Agent();
         Messages = new ObservableCollection<ChatMessage>();
         SendCommand = new AsyncRelayCommand(SendMessage);
@@ -93,40 +96,20 @@ public partial class ChatViewModel : ViewModelBase
                 {
                     Messages[^1].Content = currentDisplayedContent;
                     RequestScrollToBottom?.Invoke();
+
                 }
             }
-            
+
         } catch (HttpOperationException ex)
         {
             _logger.Error($"Error when sending message to Gemini chat completion model: {ex}");
-            ToastNotificationManager.Show(new ToastNotification
-            {
-                Title = "Error Sending Message",
-                Message = "There was an error sending your message. Please try again.",
-                Icon = "/Assets/status-failed-svgrepo-com.svg",
-                Background = Brushes.OrangeRed,
-                BorderBrush =  Brushes.Red
-            });
+            _toastService.ShowToast("Error Sending Message", "There was an error sending your message. Please try again.");
         } catch (TaskCanceledException exception) {
             _logger.Error($"Error when sending message to Gemini chat completion model: {exception}");
-            ToastNotificationManager.Show(new ToastNotification
-            {
-                Title = "Error Sending Message",
-                Message = "Agent took too long to respond.",
-                Icon = "/Assets/status-failed-svgrepo-com.svg",
-                Background = Brushes.OrangeRed,
-                BorderBrush =  Brushes.Red
-            });
-        } catch (Exception exception) {
+            _toastService.ShowToast("Error Sending Message", "Agent took too long to respond.");
+        }  catch (Exception exception) {
             _logger.Error($"Error when sending message to Gemini chat completion model: {exception}");
-            ToastNotificationManager.Show(new ToastNotification
-            {
-                Title = "Error Sending Message",
-                Message = "Unexpected error encountered. Please try again.",
-                Icon = "/Assets/status-failed-svgrepo-com.svg",
-                Background = Brushes.OrangeRed,
-                BorderBrush =  Brushes.Red
-            });
+            _toastService.ShowToast("Error Sending Message", "Unexpected error encountered. Please try again.");
         }
 
         Message = string.Empty;

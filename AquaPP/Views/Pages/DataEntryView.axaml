@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AquaPP.Views.Pages.DataEntryView"
              x:DataType="pages:DataEntryViewModel">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -20,7 +20,7 @@
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <UserControl.Styles>
         <Style Selector="DataGridColumnHeader StackPanel TextBlock">
             <Setter Property="FontWeight" Value="Bold" />
@@ -39,7 +39,7 @@
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
     </UserControl.Styles>
-    
+
     <Design.DataContext>
         <pages:DataEntryViewModel />
     </Design.DataContext>
@@ -69,104 +69,117 @@
         </Border>
 
         <Border Grid.Row="1" BorderThickness="2" BorderBrush="{DynamicResource DataGridBorder}" CornerRadius="5">
-            <DataGrid
-                ItemsSource="{Binding Readings}"
-                AutoGenerateColumns="False"
-                CanUserResizeColumns="True"
-                IsReadOnly="False"
-                HeadersVisibility="Column"
-                GridLinesVisibility="All"
-                ColumnHeaderHeight=""
-                PointerPressed="DataGridPointerPressed"
-                HorizontalScrollBarVisibility="Auto"
-                VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <DataGrid
+                    x:Name="ReadingsDataGrid"
+                    ItemsSource="{Binding Readings}"
+                    IsVisible="{Binding !ShowNoDataMessage}"
+                    CanUserResizeColumns="True"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="False"
+                    SelectionMode="Extended"
+                    SelectionChanged="OnDataGridSelectionChanged"     
+                    HeadersVisibility="Column"
+                    GridLinesVisibility="All"
+                    PointerPressed="DataGridPointerPressed"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto">
 
-                <!-- IsReadOnly="{Binding EditModeEnabled}" -->
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        FontWeight="Bold"
-                        FontSize="13"
-                        Binding="{Binding Timestamp, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"
-                        Width="180">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-clock" />
-                                <TextBlock Text="Timestamp" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                    <!-- IsReadOnly="{Binding EditModeEnabled}" -->
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            FontWeight="Bold"
+                            FontSize="13"
+                            Binding="{Binding Timestamp, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"
+                            Width="180">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-clock" />
+                                    <TextBlock Text="Timestamp" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn FontWeight="Bold"
-                                        FontSize="13"
-                                        Binding="{Binding Location}" Width="*" MinWidth="100">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-map-marker-alt" />
-                                <TextBlock Text="Location" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn FontWeight="Bold"
+                                            FontSize="13"
+                                            Binding="{Binding Location}" Width="*" MinWidth="100">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center"
+                                            HorizontalAlignment="Left">
+                                    <i:Icon Value="fa-solid fa-map-marker-alt" />
+                                    <TextBlock Text="Location" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn FontWeight="Bold"
-                                        FontSize="13"
-                                        Binding="{Binding PH}" Width="80">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-flask" />
-                                <TextBlock Text="pH" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn FontWeight="Bold"
+                                            FontSize="13"
+                                            Binding="{Binding PH}" Width="80">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-flask" />
+                                    <TextBlock Text="pH" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn FontWeight="Bold"
-                                        FontSize="13"
-                                        Binding="{Binding Conductivity}" Width="120">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-bolt" />
-                                <TextBlock Text="Conductivity (µS/cm)" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn FontWeight="Bold"
+                                            FontSize="13"
+                                            Binding="{Binding Conductivity}" Width="120">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-bolt" />
+                                    <TextBlock Text="Conductivity (µS/cm)" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn FontWeight="Bold"
-                                        FontSize="13"
-                                        Binding="{Binding Turbidity}" Width="110">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-cloud"/>
-                                <TextBlock Text="Turbidity (NTU)" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn FontWeight="Bold"
+                                            FontSize="13"
+                                            Binding="{Binding Turbidity}" Width="110">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-cloud" />
+                                    <TextBlock Text="Turbidity (NTU)" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn FontWeight="Bold"
-                                        FontSize="13"
-                                        Binding="{Binding ChlorineResidual}" Width="150">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-vial"/>
-                                <TextBlock Text="Chlorine Residual (mg/L)" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        <DataGridTextColumn FontWeight="Bold"
+                                            FontSize="13"
+                                            Binding="{Binding ChlorineResidual}" Width="150">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-vial" />
+                                    <TextBlock Text="Chlorine Residual (mg/L)" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
 
-                    <DataGridTextColumn FontWeight="Bold"
-                                        FontSize="13"
-                                        Binding="{Binding Notes}" Width="*" MinWidth="150">
-                        <DataGridTextColumn.Header>
-                            <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                <i:Icon Value="fa-solid fa-clipboard" />
-                                <TextBlock Text="Notes" />
-                            </StackPanel>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                        <DataGridTextColumn FontWeight="Bold"
+                                            FontSize="13"
+                                            Binding="{Binding Notes}" Width="*" MinWidth="150">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-clipboard" />
+                                    <TextBlock Text="Notes" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock Text="No readings found for the selected date."
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           IsVisible="{Binding ShowNoDataMessage}" />
+            </Grid>
         </Border>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 0 0" Spacing="10">
             <Button Content="Add Row" Command="{Binding AddBlankReadingRowCommand}" />
+            <Button Content="Delete Selected" Command="{Binding DeleteSelectedReadingsCommand}" />
             <Button Content="Save All Readings" Command="{Binding SaveReadingsCommand}" />
             <Button Content="Load All Current Day Readings" Command="{Binding LoadCurrentDateReadingsCommand}" />
             <Button Content="Load All Readings" Command="{Binding LoadAllReadingsCommand}" />

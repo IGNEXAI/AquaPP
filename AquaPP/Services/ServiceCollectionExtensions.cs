@@ -30,5 +30,7 @@ public static class ServiceCollectionExtensions
         collection.AddScoped<IWaterQualityRepository, WaterQualityRepository>();
         collection.AddSingleton<CustomSplitViewModel>();
         collection.AddSingleton<IUrlService, UrlService>();
+        
+        collection.AddSingleton<ISukiToastService, SukiToastService>();
     }
 }
