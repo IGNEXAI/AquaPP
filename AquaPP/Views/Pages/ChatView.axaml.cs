@@ -1,23 +1,23 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using AquaPP.ViewModels.Pages;
-using Splat;
-using ILogger = Serilog.ILogger;
+// using Avalonia.Interactivity;
+// using AquaPP.ViewModels.Pages;
+// using Splat;
+// using ILogger = Serilog.ILogger;
 
 namespace AquaPP.Views.Pages;
 
 public partial class ChatView : UserControl
 {
-    private ScrollViewer? _chatScrollViewer;
-    private readonly ILogger _logger;
+    // private ScrollViewer? _chatScrollViewer;
+    // private readonly ILogger _logger;
     
     public ChatView()
     {
         InitializeComponent();
-        _logger = Locator.Current.GetService<ILogger>()!; 
+        // _logger = Locator.Current.GetService<ILogger>()!; 
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
+    /*protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
 
@@ -47,4 +47,5 @@ public partial class ChatView : UserControl
     {
         _chatScrollViewer?.ScrollToEnd();
     }
+    */
 }

@@ -6,44 +6,45 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using AquaPP.AI;
 using AquaPP.Models;
-using AquaPP.Services;
-using Avalonia.Threading;
-using Microsoft.Extensions.DependencyInjection;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.SemanticKernel;
-using ReactiveUI;
 using Splat;
+using SukiUI.Toasts;
 using ILogger = Serilog.ILogger;
 
 namespace AquaPP.ViewModels.Pages;
 
-public partial class ChatViewModel : ViewModelBase
+public partial class ChatViewModel : PageBase
 {
     private readonly Agent _agent;
-    private string _message = string.Empty;
     private readonly ILogger _logger;
-    private readonly ISukiToastService _toastService; 
+    private readonly ISukiToastManager _toastService;
     
+    [ObservableProperty] private string _message = string.Empty;
+
+    public Bitmap UserImage { get; }
+    public Bitmap AgentImage { get; }
 
     public ObservableCollection<ChatMessage> Messages { get; }
 
-    public event Action? RequestScrollToBottom;
+    // public event Action? RequestScrollToBottom;
 
-    public ChatViewModel()
+
+    public ChatViewModel(ISukiToastManager toastManager) : base("Chat", "fa-solid fa-comment")
     {
         _logger = Locator.Current.GetService<ILogger>()!;
-        _toastService = App.Services.GetRequiredService<ISukiToastService>();
+        _toastService = toastManager;
         
         _agent = new Agent();
-        Messages = new ObservableCollection<ChatMessage>();
+        Messages = [];
         SendCommand = new AsyncRelayCommand(SendMessage);
+
+        UserImage = new Bitmap(AssetLoader.Open(new Uri("avares://AquaPP/Assets/avatar_image.jpeg")));
+        AgentImage = new Bitmap(AssetLoader.Open(new Uri("avares://AquaPP/Assets/svg-chatbot-icon--freesvgorg133669.png")));
         
         _logger.Information("ChatViewModel initialized.");
-    }
-
-    public string Message
-    {
-        get => _message;
-        set => this.RaiseAndSetIfChanged(ref _message, value);
     }
 
     public ICommand SendCommand { get; }
@@ -57,7 +58,7 @@ public partial class ChatViewModel : ViewModelBase
 
         var userMessage = new ChatMessage { Content = Message, Sender = MessageSender.User, IsLoading = false};
         Messages.Add(userMessage);
-
+        
         try
         {
             // Prepares the message to send to the agent
@@ -67,18 +68,16 @@ public partial class ChatViewModel : ViewModelBase
             // Display the circular loading indicator and scroll to bottom
             var newAgentMessageLoading = new ChatMessage { Content = string.Empty, Sender = MessageSender.Agent, IsLoading = true};
             Messages.Add(newAgentMessageLoading);
-            Dispatcher.UIThread.Post(() => RequestScrollToBottom?.Invoke());
             
             // Sends the message to the agent
             var agentResponse = await _agent.SendMessage(messageToSend);
-            
-            // Removes the loading indicator
-            Messages[^1].IsLoading = false;
             
             // Simulating streaming of response 
             int chunkSize = 5; 
             string fullContent = agentResponse.Content ?? string.Empty; 
             string currentDisplayedContent = string.Empty;
+
+            Messages[^1].IsLoading = false;
 
             // Loop through the string in chunks
             for (int i = 0; i < fullContent.Length; i += chunkSize)
@@ -95,21 +94,34 @@ public partial class ChatViewModel : ViewModelBase
                 if (Messages != null && Messages.Any())
                 {
                     Messages[^1].Content = currentDisplayedContent;
-                    RequestScrollToBottom?.Invoke();
-
                 }
             }
 
         } catch (HttpOperationException ex)
         {
             _logger.Error($"Error when sending message to Gemini chat completion model: {ex}");
-            _toastService.ShowToast("Error Sending Message", "There was an error sending your message. Please try again.");
+            _toastService.CreateToast()
+                .WithTitle("Error Sending Message")
+                .WithContent("There was an error sending your message. Please try again.")
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         } catch (TaskCanceledException exception) {
             _logger.Error($"Error when sending message to Gemini chat completion model: {exception}");
-            _toastService.ShowToast("Error Sending Message", "Agent took too long to respond.");
+            _toastService.CreateToast()
+                .WithTitle("Error Sending Message")
+                .WithContent("Agent took too long to respond.")
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         }  catch (Exception exception) {
             _logger.Error($"Error when sending message to Gemini chat completion model: {exception}");
-            _toastService.ShowToast("Error Sending Message", "Unexpected error encountered. Please try again.");
+            _toastService.CreateToast()
+                .WithTitle("Error Sending Message")
+                .WithContent("Unexpected error encountered. Please try again.")
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         }
 
         Message = string.Empty;

@@ -5,49 +5,36 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AquaPP.Controls;
 using AquaPP.Models;
-using AquaPP.Services;
 using AquaPP.Services.Repositories;
-using AquaPP.Views;
-using Avalonia.Media;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
 using Splat;
-using ILogger = Serilog.ILogger;
-using ReactiveUI;
 using SukiUI.Toasts;
+using ILogger = Serilog.ILogger;
 
 namespace AquaPP.ViewModels.Pages;
 
-public partial class DataEntryViewModel : ViewModelBase
+public partial class DataEntryViewModel : PageBase
 {
     private readonly ILogger _logger;
     private readonly IWaterQualityRepository _repository;
-    private readonly ISukiToastService _toastService; 
+    private readonly ISukiToastManager _toastService;
+    private bool _isInitialLoad = true; // Flag to track initial load
 
+    [ObservableProperty]
     private DateTime _currentDate = DateTime.Now;
-
-    public DateTime CurrentDate
-    {
-        get => _currentDate;
-        set => this.RaiseAndSetIfChanged(ref _currentDate, value);
-    }
-
+    
+    [ObservableProperty]
     private bool _showNoDataMessage;
-
-    public bool ShowNoDataMessage
-    {
-        get => _showNoDataMessage;
-        set => this.RaiseAndSetIfChanged(ref _showNoDataMessage, value);
-    }
+    
     
     private ObservableCollection<WaterQualityReading> _selectedReadings = [];
     public ObservableCollection<WaterQualityReading> SelectedReadings
     {
         get => _selectedReadings;
-        set => this.RaiseAndSetIfChanged(ref _selectedReadings, value);
+        set => SetProperty(ref _selectedReadings, value);
     }
 
     public ICommand SelectedDateChangedCommand { get; set; }
@@ -73,13 +60,14 @@ public partial class DataEntryViewModel : ViewModelBase
         }
     }
 
-    public DataEntryViewModel()
+    public DataEntryViewModel(IWaterQualityRepository repository, ISukiToastManager toastManager) 
+    : base("Data Entry", "fa-solid fa-database", 3)
     {
         _logger = Locator.Current.GetService<ILogger>()!;
         _logger.Information("DataEntryViewModel initialized.");
 
-        _repository = App.Services.GetRequiredService<IWaterQualityRepository>();
-        _toastService = App.Services.GetRequiredService<ISukiToastService>();
+        _repository = repository;
+        _toastService = toastManager;
 
         AddBlankReadingRowCommand = new RelayCommand(AddBlankReadingRow);
         SelectedDateChangedCommand = new RelayCommand<DateTime?>(SelectedDateChanged);
@@ -126,7 +114,12 @@ public partial class DataEntryViewModel : ViewModelBase
             _logger.Information("No data found in the database.");
             ShowNoDataMessage = true;
 
-            _toastService.ShowToast("No Data Found", "No readings were found in the database.");
+            _toastService.CreateToast()
+                .WithTitle("No Data Found")
+                .WithContent("No readings were found in the database.")
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         }
         else
         {
@@ -148,14 +141,26 @@ public partial class DataEntryViewModel : ViewModelBase
         {
             _logger.Information("No data found in the database.");
             ShowNoDataMessage = true;
-            
-            _toastService.ShowToast("No Data Found", $"No readings were found for {CurrentDate:MMMM dd, yyyy}");
+
+            // Only show toast if not initial load
+            if (!_isInitialLoad)
+            {
+                _toastService.CreateToast()
+                    .WithTitle("No Data Found")
+                    .WithContent($"No readings were found for {CurrentDate:MMMM dd, yyyy}")
+                    .Dismiss().After(TimeSpan.FromSeconds(3))
+                    .Dismiss().ByClicking()
+                    .Queue();
+            }
         }
         else
         {
             ShowNoDataMessage = false;
             Readings = new ObservableCollection<WaterQualityReading>(data);
         }
+
+        // After the first load, set _isInitialLoad to false
+        _isInitialLoad = false;
     }
     
 
@@ -193,18 +198,33 @@ public partial class DataEntryViewModel : ViewModelBase
                     await _repository.UpdateReadingAsync(Readings[idx]);
                 }
             }
-            
-            _toastService.ShowToast("Reading Saved", "All readings were saved successfully");
+
+            _toastService.CreateToast()
+                .WithTitle("Reading Saved")
+                .WithContent("All readings were saved successfully")
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         }
         catch (ValidationException ex)
         {
             _logger.Error(ex, "Validation error saving readings");
-            _toastService.ShowToast("Validation Error", ex.Message);
+            _toastService.CreateToast()
+                .WithTitle("Validation Error")
+                .WithContent(ex.Message)
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         }
         catch (Exception e)
         {
             _logger.Error(e, "Error saving readings");
-            _toastService.ShowToast("Error Saving Readings", "There was an error saving the readings. Please try again.");
+            _toastService.CreateToast()
+                .WithTitle("Error Saving Readings")
+                .WithContent("There was an error saving the readings. Please try again.")
+                .Dismiss().After(TimeSpan.FromSeconds(3))
+                .Dismiss().ByClicking()
+                .Queue();
         }
     }
     
@@ -223,7 +243,12 @@ public partial class DataEntryViewModel : ViewModelBase
             }
         }
 
-        _toastService.ShowToast("Readings Deleted", $"{selected.Count} readings were deleted successfully");
+        _toastService.CreateToast()
+            .WithTitle("Readings Deleted")
+            .WithContent($"{selected.Count} readings were deleted successfully")
+            .Dismiss().After(TimeSpan.FromSeconds(3))
+            .Dismiss().ByClicking()
+            .Queue();
     }
 
     private bool CanDelete()

@@ -2,8 +2,10 @@ using System;
 using System.Threading.Tasks;
 using AquaPP.Controls;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using Splat;
+using SukiUI.Toasts;
 using ILogger = Serilog.ILogger;
 
 
@@ -17,6 +19,12 @@ public interface IUrlService
 public class UrlService : IUrlService
 {   
     private readonly ILogger _logger = Locator.Current.GetService<ILogger>()!;
+    private readonly ISukiToastManager _toastManager;
+
+    public UrlService(ISukiToastManager toastManager)
+    {
+        _toastManager = toastManager;
+    }
     
     public async Task OpenUrlAsync(Control control, string url)
     {
@@ -41,14 +49,13 @@ public class UrlService : IUrlService
             if (!success)
             {
                 _logger.Error("Failed to open URL: {url}", url);
-                ToastNotificationManager.Show(new ToastNotification
-                {
-                    Title = "Error Opening URL",
-                    Message = "Failed to open the URL. Please check your network settings and try again.",
-                    Icon = "/Assets/status-failed-svgrepo-com.svg",
-                    Background = Brushes.OrangeRed,
-                    BorderBrush =  Brushes.Red
-                });
+                _toastManager.CreateToast()
+                    .WithTitle("Error Opening URL")
+                    .OfType(NotificationType.Error)
+                    .WithContent("Failed to open the URL. Please check your network settings and try again.")
+                    .Dismiss().After(TimeSpan.FromSeconds(3))
+                    .Dismiss().ByClicking()
+                    .Queue();
             }
             else
             {

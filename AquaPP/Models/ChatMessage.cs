@@ -15,4 +15,6 @@ public partial class ChatMessage : ObservableObject
     [ObservableProperty] private bool _isLoading;
     
     public MessageSender Sender { get; set; }
+
+    public bool IsUser => Sender == MessageSender.User;
 }

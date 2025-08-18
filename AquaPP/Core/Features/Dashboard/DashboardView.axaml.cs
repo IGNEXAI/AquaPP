@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace AquaPP.Views.Pages;
+namespace AquaPP.Core.Features.Dashboard;
 
 public partial class DashboardView : UserControl
 {

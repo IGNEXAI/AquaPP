@@ -5,7 +5,7 @@ using Avalonia.Styling;
 
 namespace AquaPP.ViewModels.Pages;
 
-public partial class SettingsViewModel : ViewModelBase
+public class SettingsViewModel : PageBase
 {
     public List<ThemeVariant> Themes { get; } = new() { ThemeVariant.Light, ThemeVariant.Dark };
 
@@ -27,7 +27,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
     }
 
-    public SettingsViewModel()
+    public SettingsViewModel() : base("Settings", "fa-solid fa-gear", 4)
     {
         _selectedTheme = Application.Current?.RequestedThemeVariant ?? ThemeVariant.Default;
     }
