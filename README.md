@@ -29,10 +29,10 @@ To set up the development environment for AquaPP, follow these steps:
 
 3.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/your-username/AquaPP.git
+    git clone https://github.com/Abdssamie/aqua-plus-plus.git
     cd AquaPP
     ```
-    *(Note: Replace `https://github.com/your-username/AquaPP.git` with the actual repository URL if it's hosted elsewhere.)*
+    *(Note: Replace `https://github.com/Abdssamie/aqua-plus-plus.git` with the actual repository URL if it's hosted elsewhere.)*
 
 4.  **Restore NuGet Packages:**
     Navigate to the project root directory (where `AquaPP.sln` is located) and restore the NuGet packages:
