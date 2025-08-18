@@ -1,23 +1,37 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using AquaPP.Core.Common;
+using AquaPP.Core.Features.Dashboard;
 using AquaPP.Data;
-using AquaPP.Services; 
+using AquaPP.Services;
+using AquaPP.Services.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Markup.Xaml;
 using AquaPP.ViewModels;
+using AquaPP.ViewModels.Pages;
 using AquaPP.Views;
+using AquaPP.Views.Pages;
+using Avalonia.Controls;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Enrichers.WithCaller;
 using Serilog.Events;
 using Splat;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace AquaPP;
 
 #pragma warning disable SKEXP0070
 
+[SuppressMessage("ReSharper", "PartialTypeWithSinglePart")]
 public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
@@ -32,46 +46,47 @@ public partial class App : Application
         // Configure and register the logger as before
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
+            .Enrich.WithCaller()
+            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .WriteTo.File("logs/app-log-.txt", rollingInterval: RollingInterval.Day, 
-                outputTemplate: "{Timestaecho $DISPLAYmp:yyyy-MM-dd HH.mm.ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .CreateLogger();
 
         Log.Information("Serilog logger configured and registered with Splat.");
         Locator.CurrentMutable.Register(() => Log.Logger);
 
         BindingPlugins.DataValidators.RemoveAt(0);
-        
-        // Register all the services needed for the application to run
-        Log.Information("Creating new ServiceCollection.");
-        var collection = new ServiceCollection();
 
-        try
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            Log.Information("Calling AddCommonServices() to register services.");
-            // Your AddCommonServices extension method should be located here
-            collection.AddCommonServices();
-            Log.Information("Finished calling AddCommonServices().");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred during AddCommonServices(). Check the service registrations inside that method.");
-            // Re-throw the exception so the app still crashes, but we have a log of it.
-            throw; 
+            DisableAvaloniaDataAnnotationValidation();
+
+            var services = new ServiceCollection();
+            
+            services.AddSingleton(desktop);
+            var views = ConfigureViews(services);
+            var provider = ConfigureServices(services);
+            
+            Services = provider;
+            
+            DataTemplates.Add(new ViewLocator(views));
+            desktop.MainWindow = views.CreateView<MainWindowViewModel>(provider) as Window;
+
+            try
+            {
+                Log.Information("Attempting to get CustomSplitViewModel for the MainWindowView.");
+                desktop.MainWindow = views.CreateView<MainWindowViewModel>(provider) as Window;
+                Log.Information("MainWindowView and its DataContext set successfully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while getting the CustomSplitViewModel. This means the view model or one of its dependencies could not be resolved.");
+                throw;
+            }
         }
 
-        try
-        {
-            Log.Information("Building the ServiceProvider.");
-            Services = collection.BuildServiceProvider();
-            Log.Information("ServiceProvider built successfully.");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred while building the ServiceProvider. This often indicates a dependency resolution problem.");
-            throw;
-        }
-        
         try
         {
             Log.Information("Attempting to create a database scope and perform migration.");
@@ -88,27 +103,50 @@ public partial class App : Application
             throw;
         }
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            DisableAvaloniaDataAnnotationValidation();
-
-            try
-            {
-                Log.Information("Attempting to get CustomSplitViewModel for the MainWindow.");
-                desktop.MainWindow = new MainWindow {
-                    DataContext = Services.GetRequiredService<CustomSplitViewModel>() 
-                };
-                Log.Information("MainWindow and its DataContext set successfully.");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occurred while getting the CustomSplitViewModel. This means the view model or one of its dependencies could not be resolved.");
-                throw;
-            }
-        }
-        
         Log.Information("Avalonia application initialization completed successfully.");
         base.OnFrameworkInitializationCompleted();
+    }
+    
+    private static SukiViews ConfigureViews(ServiceCollection services)
+    {
+        return new SukiViews()
+
+            // Add main view
+            .AddView<MainWindowView, MainWindowViewModel>(services)
+
+            // Add pages
+            .AddView<DashboardView, DashboardViewModel>(services)
+            .AddView<DialogView, DialogViewModel>(services)
+            .AddView<ChatView, ChatViewModel>(services)
+            .AddView<SimpleAppView, SimpleAppViewModel>(services)
+            .AddView<SettingsView, SettingsViewModel>(services)
+            .AddView<DataEntryView, DataEntryViewModel>(services);
+    }
+    
+    private static ServiceProvider ConfigureServices(ServiceCollection collection)
+    {
+        // Add logging (optional but highly recommended for debugging Semantic Kernel)
+        collection.AddLogging(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Trace); // Set appropriate log level
+        });
+        
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        var dbPath = Path.Join(path, "aquapp.db");
+        
+        // Setup database context
+        collection.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlite($"Data Source={dbPath}"));
+        
+        collection.AddScoped<IWaterQualityRepository, WaterQualityRepository>();
+        collection.AddSingleton<IUrlService, UrlService>();
+        
+        collection.AddSingleton<PageNavigationService>();
+        collection.AddSingleton<ISukiToastManager, SukiToastManager>();
+        collection.AddSingleton<ISukiDialogManager, SukiDialogManager>();
+        
+        return collection.BuildServiceProvider();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
