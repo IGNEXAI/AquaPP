@@ -1,12 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using Avalonia;
 using Avalonia.Styling;
+using Serilog;
 
 namespace AquaPP.ViewModels.Pages;
 
 public class SettingsViewModel : PageBase
 {
+    private ILogger _logger;
     public List<ThemeVariant> Themes { get; } = new() { ThemeVariant.Light, ThemeVariant.Dark };
 
     private ThemeVariant _selectedTheme;
@@ -27,8 +28,14 @@ public class SettingsViewModel : PageBase
         }
     }
 
+    public SettingsViewModel(ILogger logger) : base("Settings", "fa-solid fa-gear", 4)
+    {
+        _logger = logger;
+        _selectedTheme = Application.Current?.RequestedThemeVariant ?? ThemeVariant.Default;
+    }
+
     public SettingsViewModel() : base("Settings", "fa-solid fa-gear", 4)
     {
-        _selectedTheme = Application.Current?.RequestedThemeVariant ?? ThemeVariant.Default;
+        throw new System.NotImplementedException();
     }
 }

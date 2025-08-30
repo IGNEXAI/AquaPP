@@ -1,20 +1,29 @@
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using AquaPP.Models;
 using AquaPP.ViewModels.Pages;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 using Serilog;
 using Serilog.Enrichers.CallerInfo;
 using Serilog.Enrichers.CallStack;
-using ILogger = Serilog.ILogger;
 
-namespace AquaPP.Views.Pages;
+namespace AquaPP.Views.DataEntry;
 
-public partial class DataEntryView : UserControl
+public partial class DataGridView : UserControl
 {
+    public DataGridView()
+    {
+        InitializeComponent();
+        DataContextChanged += OnDataContextChanged;
+    }
+    
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
     
     private readonly ILogger _logger = new LoggerConfiguration()
         .Enrich.WithCallerInfo(includeFileInfo:true, allowedAssemblies:  ["AquaPP", "SukiUI", "Avalonia"])
@@ -24,12 +33,6 @@ public partial class DataEntryView : UserControl
         .Enrich.WithCallStack()
         .CreateLogger();
     
-    public DataEntryView()
-    {
-        InitializeComponent();
-        DataContextChanged += OnDataContextChanged;
-    }
-
     private void OnDataContextChanged(object? sender, System.EventArgs e)
     {
         if (DataContext is DataEntryViewModel viewModel)
@@ -40,11 +43,6 @@ public partial class DataEntryView : UserControl
     
     private void ViewModel_RequestScrollToBottom()
     {
-        var items = ReadingsDataGrid.ItemsSource.ToDynamicList(); 
-        if (items.Count > 0)
-        {
-            ReadingsDataGrid.ScrollIntoView(items[^1], null);
-        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -62,7 +60,7 @@ public partial class DataEntryView : UserControl
         
         _logger.Information("OnDataGridSelectionChanged event fired successfully");
         viewModel.SelectedReadings.Clear();
-        foreach (var item in ReadingsDataGrid.SelectedItems)
+        foreach (var item in MainDataGrid.SelectedItems)
         {
             if (item is WaterQualityReading reading)
             {

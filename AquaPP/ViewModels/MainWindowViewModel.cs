@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AquaPP.Services;
+using AquaPP.Services.File;
 using AquaPP.ViewModels.Pages;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Splat;
+using Prism.Events;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
 using ILogger = Serilog.ILogger;
@@ -17,22 +18,37 @@ namespace AquaPP.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly ILogger _logger = Locator.Current.GetService<ILogger>()!;
+    private readonly ILogger _logger;
     private readonly IUrlService _urlService;
+
+    private readonly IFilePickerService _filePickerService;
+    private readonly IEventAggregator _eventAggregator;
     public ISukiToastManager ToastManager { get; }
     public ISukiDialogManager DialogManager { get; }
     public PageNavigationService PageNavigationService { get; set; }
     public IAvaloniaReadOnlyList<PageBase> Pages { get; }
     [ObservableProperty] private PageBase? _activePage;
-
-
+    
+    /// <summary>
+    /// Design time only constructor
+    /// </summary>
+    public MainWindowViewModel()
+    {
+        
+    }
     public MainWindowViewModel(IEnumerable<PageBase> pages,
         PageNavigationService pageNavigationService,
         ISukiToastManager toastManager,
         ISukiDialogManager dialogManager,
+        ILogger logger,
+        IEventAggregator eventAggregator,
+        IFilePickerService filePickerService,
         IUrlService urlService)
 
     {
+        _logger = logger;
+        _eventAggregator = eventAggregator;
+        _filePickerService = filePickerService;
         _urlService = urlService;
         ToastManager = toastManager;
         DialogManager = dialogManager;
@@ -48,11 +64,18 @@ public partial class MainWindowViewModel : ViewModelBase
             ActivePage = page;
         };
     }
+    
+    [RelayCommand]
+    private async Task OnOpenFile(Control control)
+    {
+        var localFilePath = await _filePickerService.PickOpenFileAsync(control, "Open file", ["csv", "excel"]);
+        if (localFilePath != null) _eventAggregator.GetEvent<OpenFileEvent>().Publish(localFilePath);
+    }
 
     [RelayCommand]
     private async Task OpenUrlAsync(object parameter)
     {
-        _logger.Information("OpenUrlCommand executed. Received parameter type: {type}", parameter?.GetType());
+        _logger.Information("OpenUrlCommand executed. Received parameter type: {type}", parameter.GetType());
 
         // --- defensive code starts here ---
         if (parameter is not object[] parameters || parameters.Length < 2)

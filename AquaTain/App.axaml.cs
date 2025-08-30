@@ -1,16 +1,41 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using AquaTain.Core.Common;
+using AquaTain.Core.Features.Dashboard;
+using AquaTain.Data;
+using AquaTain.Services;
+using AquaTain.Services.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Markup.Xaml;
 using AquaTain.ViewModels;
+using AquaTain.ViewModels.Pages;
 using AquaTain.Views;
+using AquaTain.Views.Pages;
+using Avalonia.Controls;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Enrichers.WithCaller;
+using Serilog.Events;
+using Splat;
+using SukiUI.Dialogs;
+using SukiUI.Toasts;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace AquaTain;
 
+#pragma warning disable SKEXP0070
+
+[SuppressMessage("ReSharper", "PartialTypeWithSinglePart")]
 public partial class App : Application
 {
+    private IServiceProvider Services { get; set; } = null!;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -18,27 +43,115 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // Configure and register the logger as before
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .Enrich.WithCaller()
+            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .WriteTo.File("logs/app-log-.txt", rollingInterval: RollingInterval.Day, 
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
+        Log.Information("Serilog logger configured and registered with Splat.");
+        Locator.CurrentMutable.Register(() => Log.Logger);
+
+        BindingPlugins.DataValidators.RemoveAt(0);
+
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow
+
+            var services = new ServiceCollection();
+            
+            services.AddSingleton(desktop);
+            var views = ConfigureViews(services);
+            var provider = ConfigureServices(services);
+            
+            Services = provider;
+            
+            DataTemplates.Add(new ViewLocator(views));
+            desktop.MainWindow = views.CreateView<MainWindowViewModel>(provider) as Window;
+
+            try
             {
-                DataContext = new MainWindowViewModel(),
-            };
+                Log.Information("Attempting to get CustomSplitViewModel for the MainWindowView.");
+                desktop.MainWindow = views.CreateView<MainWindowViewModel>(provider) as Window;
+                Log.Information("MainWindowView and its DataContext set successfully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while getting the CustomSplitViewModel. This means the view model or one of its dependencies could not be resolved.");
+                throw;
+            }
         }
 
+        try
+        {
+            Log.Information("Attempting to create a database scope and perform migration.");
+            using var scope = Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            Log.Information("Successfully retrieved ApplicationDbContext from the service provider.");
+            
+            dbContext.Database.Migrate();
+            Log.Information("Database migration completed successfully.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "An error occurred during database migration. This is the most likely culprit if your app crashes here.");
+            throw;
+        }
+
+        Log.Information("Avalonia application initialization completed successfully.");
         base.OnFrameworkInitializationCompleted();
+    }
+    
+    private static SukiViews ConfigureViews(ServiceCollection services)
+    {
+        return new SukiViews()
+
+            // Add the main view
+            .AddView<MainWindowView, MainWindowViewModel>(services)
+
+            // Add pages
+            .AddView<DashboardView, DashboardViewModel>(services)
+            .AddView<DialogView, DialogViewModel>(services)
+            .AddView<ChatView, ChatViewModel>(services)
+            .AddView<SettingsView, SettingsViewModel>(services);
+    }
+    
+    private static ServiceProvider ConfigureServices(ServiceCollection collection)
+    {
+        // Add logging (optional but highly recommended for debugging Semantic Kernel)
+        collection.AddLogging(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Trace); // Set the appropriate log level
+        });
+        
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        var dbPath = Path.Join(path, "AquaTain.db");
+        
+        // Setup database context
+        collection.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlite($"Data Source={dbPath}"));
+        
+        collection.AddScoped<IWaterQualityRepository, WaterQualityRepository>();
+        collection.AddSingleton<IUrlService, UrlService>();
+        
+        collection.AddSingleton<PageNavigationService>();
+        collection.AddSingleton<ISukiToastManager, SukiToastManager>();
+        collection.AddSingleton<ISukiDialogManager, SukiDialogManager>();
+        
+        return collection.BuildServiceProvider();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
     {
-        // Get an array of plugins to remove
         var dataValidationPluginsToRemove =
             BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
 
-        // remove each entry found
         foreach (var plugin in dataValidationPluginsToRemove)
         {
             BindingPlugins.DataValidators.Remove(plugin);

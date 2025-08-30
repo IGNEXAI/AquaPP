@@ -6,7 +6,7 @@ using Avalonia.Data.Converters;
 
 namespace AquaPP.Converters;
 
-public class ButtonCommandParamsConverter: IMultiValueConverter
+public class ButtonCommandParamsConverter : IMultiValueConverter
 {
 
     public object Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)

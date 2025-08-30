@@ -1,3 +1,4 @@
+<!-- ReSharper disable Xaml.StyleClassNotFound -->
 <sukiUi:SukiWindow xmlns="https://github.com/avaloniaui"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:vm="using:AquaPP.ViewModels"
@@ -11,11 +12,12 @@
                    x:DataType="vm:MainWindowViewModel"
                    Icon="/Assets/avalonia-logo.ico"
                    Title="AquaPP">
-    
+
+
     <sukiUi:SukiWindow.Resources>
         <converters:ButtonCommandParamsConverter x:Key="ButtonToUrlOpenConverterInstance" />
     </sukiUi:SukiWindow.Resources>
-    
+
     <sukiUi:SukiWindow.TitleBarContextMenu>
         <ContextMenu>
             <MenuItem Header="Custom TitleBar Context Menu Item" />
@@ -46,76 +48,64 @@
     </sukiUi:SukiWindow.Hosts>
 
     <sukiUi:SukiWindow.MenuItems>
-        <MenuItem Header="Toggles">
-            <MenuItem Header="MenuItem1">
+        <MenuItem Header="File">
+            <MenuItem Header="Open" Command="{Binding OnOpenFile}">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="SelectionChanged">
+                        <InvokeCommandAction Command="{Binding OnOpenFile}"
+                                             CommandParameter=""/>
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-folder-open" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="OpenRecent">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-folder-open" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Save">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-floppy-disk" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Save As...">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-floppy-disk" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Exit">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-solid fa-right-from-bracket" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+        <MenuItem Header="View">
+            <MenuItem Command="{Binding $parent[sukiUi:SukiWindow].ToggleFullScreen}"
+                      Header="Fullscreen"
+                      ToolTip.Tip="Makes the app fullscreen.">
                 <MenuItem.Icon>
                     <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
                 </MenuItem.Icon>
             </MenuItem>
-
-            <MenuItem Header="Title Bar"
-                      ToolTip.Tip="Toggles the title bar.">
+        </MenuItem>
+        <MenuItem Header="Help">
+            <MenuItem Header="About">
                 <MenuItem.Icon>
-                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                    <i:Icon Value="fa-solid fa-circle-info" HorizontalAlignment="Center" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Change TitleBar Background Visibility">
+            <MenuItem Header="Check for Updates">
                 <MenuItem.Icon>
-                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                    <i:Icon Value="fa-solid fa-arrows-rotate" HorizontalAlignment="Center" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Right To Left"
-                      ToolTip.Tip="Toggles the right to left.">
+            <MenuItem Header="Documentation">
                 <MenuItem.Icon>
-                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                    <i:Icon Value="fa-solid fa-book" HorizontalAlignment="Center" />
                 </MenuItem.Icon>
             </MenuItem>
-
-
-            <MenuItem Header="Window Options">
-                <MenuItem.Icon>
-                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
-                </MenuItem.Icon>
-                <MenuItem Header="Window Lock"
-                          ToolTip.Tip="Toggles minimizing and resizing.">
-                    <MenuItem.Icon>
-                        <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Command="{Binding $parent[sukiUi:SukiWindow].ToggleFullScreen}"
-                          Header="Fullscreen"
-                          ToolTip.Tip="Makes the app fullscreen.">
-                    <MenuItem.Icon>
-                        <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="CanFullscreen"
-                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanFullScreen, Mode=TwoWay}"
-                          ToggleType="CheckBox" />
-
-                <MenuItem Header="CanPin"
-                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanPin, Mode=TwoWay}"
-                          ToggleType="CheckBox" />
-
-                <MenuItem Header="CanMinimize"
-                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanMinimize, Mode=TwoWay}"
-                          ToggleType="CheckBox" />
-
-                <MenuItem Header="CanMaximize"
-                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanMaximize, Mode=TwoWay}"
-                          ToggleType="CheckBox" />
-
-                <MenuItem Header="CanMove"
-                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanMove, Mode=TwoWay}"
-                          ToggleType="CheckBox" />
-
-                <MenuItem Header="CanResize"
-                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanResize, Mode=TwoWay}"
-                          ToggleType="CheckBox" />
-            </MenuItem>
-
-
         </MenuItem>
     </sukiUi:SukiWindow.MenuItems>
 
@@ -192,6 +182,4 @@
             </StackPanel>
         </sukiUi:SukiSideMenu.FooterContent>
     </sukiUi:SukiSideMenu>
-
-
 </sukiUi:SukiWindow>

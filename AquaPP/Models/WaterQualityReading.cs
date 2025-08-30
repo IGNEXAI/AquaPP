@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable InconsistentNaming
 
 namespace AquaPP.Models;
 
@@ -8,33 +9,33 @@ public partial class WaterQualityReading : ObservableValidator
 {
     [ObservableProperty] private Guid _id;
     
-    [ObservableProperty] private DateTime _timestamp = DateTime.Now; // When the reading was taken
+    [ObservableProperty] private string _sampleId = string.Empty;
+    
+    [ObservableProperty] private DateTime _timestamp = DateTime.Now;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Location is required")]
-    [StringLength(100, ErrorMessage = "Location must be less than 100 characters")] private string _location = string.Empty;
+    [StringLength(100, ErrorMessage = "Location must be less than 100 characters")] 
+    private string _location = string.Empty;
 
-    // Key Water Quality Parameters - add more as needed
+    // Water Quality Parameters as doubles
     [ObservableProperty] 
-    [Range(0, 14, ErrorMessage = "pH must be between 0 and 14")]
     private double _pH;
 
     [ObservableProperty] 
-    [Range(0, double.MaxValue, ErrorMessage = "Conductivity must be positive")]
-    private double _conductivity; // Unit: µS/cm
+    private double _conductivity;
 
     [ObservableProperty] 
-    [Range(0, double.MaxValue, ErrorMessage = "Turbidity must be positive")]
-    private double _turbidity; // Unit: NTU (Nephelometric Turbidity Units)
+    private double _turbidity;
 
     [ObservableProperty] 
-    [Range(0, double.MaxValue, ErrorMessage = "Chlorine residual must be positive")]
-    private double _chlorineResidual; // Unit: mg/L
+    private double _chlorineResidual;
 
-    [ObservableProperty] private string _notes = string.Empty; // Any observations
-
-    public WaterQualityReading()
+    [ObservableProperty] private string _notes = string.Empty;
+    
+    public static string GenerateSampleId()
     {
-        Id = Guid.NewGuid();
+        var random = new Random();
+        return random.Next(100000000, 999999999).ToString();
     }
 }

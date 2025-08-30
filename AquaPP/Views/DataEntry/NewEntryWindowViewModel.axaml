@@ -1,0 +1,21 @@
+<suki:SukiWindow xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:suki="https://github.com/kikipoulet/SukiUI"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="AquaPP.Views.DataEntry.NewEntryWindowViewModel"
+                 Title="NewEntryWindowViewModel">
+    <!-- ReSharper disable Xaml.StyleClassNotFound -->
+    <StackPanel>
+        <DropDownButton Content="Select from existing templates" Classes="Flat Rounded">
+            <DropDownButton.Flyout>
+                <Flyout>
+                    Template 1
+                </Flyout>
+            </DropDownButton.Flyout>
+        </DropDownButton>
+        <Button Content="Create your own custom template" Classes="Flat Rounded"></Button>
+        <Button Content="Import your own data" Classes="Flat Rounded"></Button>
+    </StackPanel>
+</suki:SukiWindow>

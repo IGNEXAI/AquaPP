@@ -26,7 +26,7 @@ public class SukiViews
 
         if (viewModelType.IsAssignableTo(typeof(PageBase)))
         {
-            services.AddSingleton(typeof(PageBase), viewModelType);
+            services.AddScoped(typeof(PageBase), viewModelType); // Changed to AddScoped
         }
         else
         {

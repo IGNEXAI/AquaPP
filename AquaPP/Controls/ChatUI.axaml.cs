@@ -12,20 +12,15 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Splat;
-using ILogger = Serilog.ILogger;
 
 namespace AquaPP.Controls;
 
 // ReSharper disable once InconsistentNaming
 public partial class ChatUI : UserControl // Ensure partial keyword is present
 {
-    private readonly ILogger _logger;
 
     public ChatUI()
     {
-        _logger = Locator.Current.GetService<ILogger>()!;
-        
         InitializeComponent();
     }
 
@@ -134,7 +129,7 @@ public partial class ChatUI : UserControl // Ensure partial keyword is present
         }
         catch (NullReferenceException ex)
         {
-            _logger.Error("Error trying to run ValueOnCollectionChanged when message collection changed: {ex.Message}", ex.Message);
+            throw new Exception($"Error trying to run ValueOnCollectionChanged when message collection changed: {ex.Message}");
         }
     }
     

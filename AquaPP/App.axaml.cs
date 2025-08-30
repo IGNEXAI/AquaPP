@@ -9,7 +9,9 @@ using AquaPP.Core.Common;
 using AquaPP.Core.Features.Dashboard;
 using AquaPP.Data;
 using AquaPP.Services;
-using AquaPP.Services.Repositories;
+using AquaPP.Services.Csv;
+using AquaPP.Services.File;
+using AquaPP.Services.Units;
 using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Markup.Xaml;
 using AquaPP.ViewModels;
@@ -18,14 +20,12 @@ using AquaPP.Views;
 using AquaPP.Views.Pages;
 using Avalonia.Controls;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Prism.Events;
 using Serilog;
-using Serilog.Enrichers.WithCaller;
-using Serilog.Events;
-using Splat;
+using Serilog.Enrichers.CallerInfo;
+using Serilog.Enrichers.CallStack;
 using SukiUI.Dialogs;
 using SukiUI.Toasts;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace AquaPP;
 
@@ -34,7 +34,7 @@ namespace AquaPP;
 [SuppressMessage("ReSharper", "PartialTypeWithSinglePart")]
 public partial class App : Application
 {
-    public static IServiceProvider Services { get; private set; } = null!;
+    public static IServiceProvider Services { get; set; } = null!;
 
     public override void Initialize()
     {
@@ -43,18 +43,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        // Configure and register the logger as before
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .Enrich.WithCaller()
-            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .WriteTo.File("logs/app-log-.txt", rollingInterval: RollingInterval.Day, 
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-            .CreateLogger();
-
-        Log.Information("Serilog logger configured and registered with Splat.");
-        Locator.CurrentMutable.Register(() => Log.Logger);
 
         BindingPlugins.DataValidators.RemoveAt(0);
 
@@ -125,10 +113,20 @@ public partial class App : Application
     
     private static ServiceProvider ConfigureServices(ServiceCollection collection)
     {
+        var logger = new LoggerConfiguration()
+            .Enrich.WithCallerInfo(includeFileInfo:true, allowedAssemblies:  ["AquaPP", "SukiUI", "Avalonia"])
+            .WriteTo.Console()
+            .WriteTo.File("app-debug.log")
+            .Enrich.FromLogContext()
+            .Enrich.WithCallStack()
+            .CreateLogger();
+        
+        collection.AddSingleton<ILogger>(logger); // Register ILogger as a singleton
+        
         // Add logging (optional but highly recommended for debugging Semantic Kernel)
         collection.AddLogging(builder =>
         {
-            builder.SetMinimumLevel(LogLevel.Trace); // Set appropriate log level
+            builder.AddSerilog(logger);
         });
         
         var folder = Environment.SpecialFolder.LocalApplicationData;
@@ -137,13 +135,23 @@ public partial class App : Application
         
         // Setup database context
         collection.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite($"Data Source={dbPath}"));
+            {
+                options.UseSqlite($"Data Source={dbPath}");
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+            }
+            );
         
-        collection.AddScoped<IWaterQualityRepository, WaterQualityRepository>();
+        
+        
         collection.AddSingleton<IUrlService, UrlService>();
+        collection.AddSingleton<WaterQualityCsvService>(); // Register WaterQualityCsvService
+        collection.AddSingleton<IFilePickerService, FilePickerService>(); // Register IFilePickerService
+        collection.AddSingleton<IUnitConversionService, UnitConversionService>(); // Register IFilePickerService
         
         collection.AddSingleton<PageNavigationService>();
         collection.AddSingleton<ISukiToastManager, SukiToastManager>();
+        collection.AddSingleton<IEventAggregator, EventAggregator>();
         collection.AddSingleton<ISukiDialogManager, SukiDialogManager>();
         
         return collection.BuildServiceProvider();

@@ -78,7 +78,7 @@
                     AutoGenerateColumns="False"
                     IsReadOnly="False"
                     SelectionMode="Extended"
-                    SelectionChanged="OnDataGridSelectionChanged"     
+                    SelectionChanged="OnDataGridSelectionChanged"
                     HeadersVisibility="Column"
                     GridLinesVisibility="All"
                     PointerPressed="DataGridPointerPressed"
@@ -87,6 +87,19 @@
 
                     <!-- IsReadOnly="{Binding EditModeEnabled}" -->
                     <DataGrid.Columns>
+                        <DataGridTextColumn
+                            FontWeight="Bold"
+                            FontSize="13"
+                            Binding="{Binding SampleId}"
+                            Width="180">
+                            <DataGridTextColumn.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                    <i:Icon Value="fa-solid fa-key" />
+                                    <TextBlock Text="Timestamp" />
+                                </StackPanel>
+                            </DataGridTextColumn.Header>
+                        </DataGridTextColumn>
+                        
                         <DataGridTextColumn
                             FontWeight="Bold"
                             FontSize="13"
@@ -129,7 +142,16 @@
                             <DataGridTextColumn.Header>
                                 <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
                                     <i:Icon Value="fa-solid fa-bolt" />
-                                    <TextBlock Text="Conductivity (µS/cm)" />
+                                    <TextBlock Text="Conductivity" />
+                                    <ComboBox ItemsSource="{Binding ConductivityUnits}"
+                                              SelectedItem="{Binding SelectedConductivityUnit}" >
+                                        <Interaction.Behaviors>
+                                            <EventTriggerBehavior EventName="SelectionChanged">
+                                                <InvokeCommandAction Command="{Binding UpdateConductivityUnitCommand}"
+                                                                     CommandParameter="{Binding SelectedConductivityUnit}"/>
+                                            </EventTriggerBehavior>
+                                        </Interaction.Behaviors>
+                                    </ComboBox>
                                 </StackPanel>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -140,7 +162,16 @@
                             <DataGridTextColumn.Header>
                                 <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
                                     <i:Icon Value="fa-solid fa-cloud" />
-                                    <TextBlock Text="Turbidity (NTU)" />
+                                    <TextBlock Text="Turbidity" />
+                                    <ComboBox ItemsSource="{Binding TurbidityUnits}"
+                                              SelectedItem="{Binding SelectedTurbidityUnit}" >
+                                        <Interaction.Behaviors>
+                                            <EventTriggerBehavior EventName="SelectionChanged">
+                                                <InvokeCommandAction Command="{Binding UpdateTurbidityUnitCommand}"
+                                                                     CommandParameter="{Binding SelectedTurbidityUnit}"/>
+                                            </EventTriggerBehavior>
+                                        </Interaction.Behaviors>
+                                    </ComboBox>
                                 </StackPanel>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -151,7 +182,16 @@
                             <DataGridTextColumn.Header>
                                 <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
                                     <i:Icon Value="fa-solid fa-vial" />
-                                    <TextBlock Text="Chlorine Residual (mg/L)" />
+                                    <TextBlock Text="Chlorine Residual" />
+                                    <ComboBox ItemsSource="{Binding ChlorineUnits}"
+                                              SelectedItem="{Binding SelectedChlorineUnit}" >
+                                        <Interaction.Behaviors>
+                                            <EventTriggerBehavior EventName="SelectionChanged">
+                                                <InvokeCommandAction Command="{Binding UpdateChlorineUnitCommand}"
+                                                                     CommandParameter="{Binding SelectedChlorineUnit}" />
+                                            </EventTriggerBehavior>
+                                        </Interaction.Behaviors>
+                                    </ComboBox>
                                 </StackPanel>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -183,6 +223,16 @@
             <Button Content="Save All Readings" Command="{Binding SaveReadingsCommand}" />
             <Button Content="Load All Current Day Readings" Command="{Binding LoadCurrentDateReadingsCommand}" />
             <Button Content="Load All Readings" Command="{Binding LoadAllReadingsCommand}" />
+            <Button Content="Export" ToolTip.Tip="Export to csv" Command="{Binding ExportReadingsCommand}"> 
+                <Button.CommandParameter>
+                    <Binding RelativeSource="{RelativeSource Self}" />
+                </Button.CommandParameter>
+            </Button>
+            <!--<Button Content="Import" ToolTip.Tip="Import from csv" Command="{Binding ImportReadingsCommand}">
+                <Button.CommandParameter>
+                    <Binding RelativeSource="{RelativeSource Self}" />
+                </Button.CommandParameter>
+            </Button>-->
         </StackPanel>
     </Grid>
 

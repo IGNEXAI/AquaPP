@@ -18,11 +18,12 @@ public interface IUrlService
 
 public class UrlService : IUrlService
 {   
-    private readonly ILogger _logger = Locator.Current.GetService<ILogger>()!;
+    private readonly ILogger _logger;
     private readonly ISukiToastManager _toastManager;
 
-    public UrlService(ISukiToastManager toastManager)
+    public UrlService(ISukiToastManager toastManager, ILogger logger)
     {
+        _logger = logger;
         _toastManager = toastManager;
     }
     

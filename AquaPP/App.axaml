@@ -21,6 +21,7 @@
     </Application.Resources>
 
     <Application.Styles>
+        <StyleInclude Source="avares://SukiUI.Dock/Index.axaml" />
         <sukiUi:SukiTheme ThemeColor="Blue" /> 
     </Application.Styles>
 </Application>

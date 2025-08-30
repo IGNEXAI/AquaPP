@@ -25,9 +25,9 @@ public class Agent : IAgent
 
 
     // Constructor to initialize Kernel and ChatCompletionService
-    public Agent()
+    public Agent(ILogger logger)
     {
-        _logger = Locator.Current.GetService<ILogger>()!;
+        _logger = logger;
 
 
         var googleApiKey = Environment.GetEnvironmentVariable("GOOGLE_API_KEY");
