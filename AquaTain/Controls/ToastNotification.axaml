@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="80"
+             x:Class="AquaTain.Controls.ToastNotification"
+             Name="ToastControl">
+    <Border CornerRadius="4"
+            BorderThickness="1"
+            Padding="12,8"
+            Background="{Binding Background, ElementName=ToastControl}"
+            BorderBrush="{Binding BorderBrush, ElementName=ToastControl}"
+            MaxWidth="400" MinHeight="50">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+            <!-- Icon -->
+            <Svg
+                Path="{Binding Icon, ElementName=ToastControl}"
+                Width="20"
+                Height="20"
+                VerticalAlignment="Center"
+                Margin="0,0,12,0"></Svg>
+            <!--<PathIcon
+                
+                Data="{Binding Icon, ElementName=ToastControl}"
+                VerticalAlignment="Center"
+                Margin="0,0,12,0">
+            </PathIcon>-->
+            
+            <!--<TextBlock Grid.Column="0"
+                       Text="{Binding ElementName=ToastControl}"
+                       FontFamily="Segoe MDL2 Assets, Segoe UI Emoji"
+                       FontSize="20"
+                       VerticalAlignment="Center"
+                       Margin="0,0,12,0" />-->
+
+            <!-- Content -->
+            <StackPanel Grid.Column="1" Spacing="4">
+                <!-- Title -->
+                <TextBlock Text="{Binding Title, ElementName=ToastControl}"
+                           FontWeight="SemiBold"
+                           IsVisible="{Binding !!Title, ElementName=ToastControl}" />
+
+                <!-- Message -->
+                <TextBlock Text="{Binding Message, ElementName=ToastControl}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+</Grid>
+    </Border>
+</UserControl>

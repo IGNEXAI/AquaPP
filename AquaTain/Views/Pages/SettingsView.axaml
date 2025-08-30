@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:AquaTain.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AquaTain.Views.Pages.SettingsView"
+             x:DataType="pages:SettingsViewModel">
+    
+    <Design.DataContext>
+        <pages:SettingsViewModel />
+    </Design.DataContext>
+
+    <StackPanel>
+        <TextBlock Text="Settings" FontSize="24" HorizontalAlignment="Center" Margin="10"/>
+        <ComboBox ItemsSource="{Binding Themes}"
+                  Width="200"
+                  SelectedItem="{Binding SelectedTheme}"
+                  HorizontalAlignment="Left"
+                  Margin="10"/>
+    </StackPanel>
+    
+</UserControl>

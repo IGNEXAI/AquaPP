@@ -1,0 +1,65 @@
+2025-08-22 12:18:56.912 +01:00 [INF] Created the new custom kernel builder successfully
+2025-08-22 12:18:57.024 +01:00 [INF] Added GeminiChatCompletion to kernel builder
+2025-08-22 12:18:57.038 +01:00 [INF] Building the kernel
+2025-08-22 12:18:57.100 +01:00 [INF] ChatViewModel initialized.
+2025-08-22 12:18:57.349 +01:00 [INF] DataEntryViewModel initialized.
+2025-08-22 12:18:58.789 +01:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2025-08-22 12:18:59.418 +01:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-08-22 12:18:59.526 +01:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsLock' AND "type" = 'table';
+2025-08-22 12:18:59.557 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT OR IGNORE INTO "__EFMigrationsLock"("Id", "Timestamp") VALUES(1, '2025-08-22 11:18:59.5466078+00:00');
+SELECT changes();
+2025-08-22 12:18:59.768 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" TEXT NOT NULL CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY,
+    "ProductVersion" TEXT NOT NULL
+);
+2025-08-22 12:18:59.799 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2025-08-22 12:18:59.811 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-08-22 12:18:59.835 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-08-22 12:18:59.856 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM "__EFMigrationsLock";
+2025-08-22 12:19:02.910 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__date_Date_0='2025-08-22T00:00:00.0000000+01:00' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+SELECT "w"."Id", "w"."ChlorineResidual", "w"."Conductivity", "w"."Location", "w"."Notes", "w"."PH", "w"."SampleId", "w"."TimeStamp", "w"."Turbidity"
+FROM "WaterQualityReadings" AS "w"
+WHERE rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', "w"."TimeStamp", 'start of day'), '0'), '.') = @__date_Date_0
+2025-08-22 12:19:02.928 +01:00 [INF] No data found for date "2025-08-22T12:18:57.3493079+01:00"
+2025-08-22 12:19:02.935 +01:00 [INF] LoadCurrentDateReadingsAsync returned: 0 readings.
+2025-08-22 12:19:02.940 +01:00 [INF] No data found in the database.
+2025-08-22 12:19:16.760 +01:00 [INF] OnDataGridSelectionChanged event fired successfully
+2025-08-22 12:34:30.508 +01:00 [INF] OnDataGridSelectionChanged event fired successfully
+imeout='30']
+SELECT "w"."Id", "w"."ChlorineResidual", "w"."Conductivity", "w"."Location", "w"."Notes", "w"."PH", "w"."SampleId", "w"."TimeStamp", "w"."Turbidity"
+FROM "WaterQualityReadings" AS "w"
+WHERE rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', "w"."TimeStamp", 'start of day'), '0'), '.') = @__date_Date_0
+2025-08-22 12:19:04.817 +01:00 [INF] No data found for date "2025-08-22T12:18:57.3493079+01:00"
+2025-08-22 12:19:04.822 +01:00 [INF] LoadCurrentDateReadingsAsync returned: 0 readings.
+2025-08-22 12:19:04.836 +01:00 [INF] No data found in the database.
+2025-08-22 12:19:15.524 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "w"."Id", "w"."ChlorineResidual", "w"."Conductivity", "w"."Location", "w"."Notes", "w"."PH", "w"."SampleId", "w"."TimeStamp", "w"."Turbidity"
+FROM "WaterQualityReadings" AS "w"
+2025-08-22 12:19:15.647 +01:00 [INF] LoadReadingAsync returned: System.Collections.Generic.List`1[AquaPP.Models.WaterQualityModel]
+2025-08-22 12:19:20.166 +01:00 [INF] Saving reading 0 with SampleId 895673101: AquaPP.Models.WaterQualityReading
+2025-08-22 12:19:20.291 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p8='16aa9866-f9dd-423d-a86b-db6fb5d91b33', @p0='464', @p1='464.13', @p2='Rabat' (Nullable = false) (Size = 5), @p3='Great' (Nullable = false) (Size = 5), @p4='7.5', @p5='895673101' (Nullable = false) (Size = 9), @p6='2025-08-21T23:22:44.0000000' (DbType = DateTime), @p7='70'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "WaterQualityReadings" SET "ChlorineResidual" = @p0, "Conductivity" = @p1, "Location" = @p2, "Notes" = @p3, "PH" = @p4, "SampleId" = @p5, "TimeStamp" = @p6, "Turbidity" = @p7
+WHERE "Id" = @p8
+RETURNING 1;
+2025-08-22 12:34:52.051 +01:00 [INF] Saving reading 0 with SampleId 895673101: AquaPP.Models.WaterQualityReading
+2025-08-22 12:34:52.071 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@p8='16aa9866-f9dd-423d-a86b-db6fb5d91b33', @p0='464', @p1='464.13', @p2='Rabat' (Nullable = false) (Size = 5), @p3='Great' (Nullable = false) (Size = 5), @p4='7.5', @p5='895673101' (Nullable = false) (Size = 9), @p6='2025-08-21T23:22:44.0000000' (DbType = DateTime), @p7='70'], CommandType='"Text"', CommandTimeout='30']
+UPDATE "WaterQualityReadings" SET "ChlorineResidual" = @p0, "Conductivity" = @p1, "Location" = @p2, "Notes" = @p3, "PH" = @p4, "SampleId" = @p5, "TimeStamp" = @p6, "Turbidity" = @p7
+WHERE "Id" = @p8
+RETURNING 1;
+2025-08-22 12:34:52.092 +01:00 [INF] Saving reading 1 with SampleId 860543896: AquaPP.Models.WaterQualityReading
+2025-08-22 12:34:52.152 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='00000000-0000-0000-0000-000000000000' (Nullable = true)], CommandType='"Text"', CommandTimeout='30']
+SELECT "w"."Id", "w"."ChlorineResidual", "w"."Conductivity", "w"."Location", "w"."Notes", "w"."PH", "w"."SampleId", "w"."TimeStamp", "w"."Turbidity"
+FROM "WaterQualityReadings" AS "w"
+WHERE "w"."Id" = @__p_0
+LIMIT 1
+2025-08-22 12:34:52.214 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='5fbd3740-d73e-4f43-a57a-3c6577d7aedf', @p1='13', @p2='434', @p3='Blackburn' (Nullable = false) (Size = 9), @p4='Probe' (Nullable = false) (Size = 5), @p5='13', @p6='860543896' (Nullable = false) (Size = 9), @p7='2025-08-22T12:34:29.0000000' (DbType = DateTime), @p8='450'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "WaterQualityReadings" ("Id", "ChlorineResidual", "Conductivity", "Location", "Notes", "PH", "SampleId", "TimeStamp", "Turbidity")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8);

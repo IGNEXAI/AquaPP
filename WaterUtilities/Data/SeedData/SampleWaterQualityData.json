@@ -1,0 +1,43 @@
+[
+  {
+    "Id": "a1b2c3d4-e5f6-4789-a123-456789abcdef",
+    "TimeStamp": "2025-08-19T10:00:00Z",
+    "Location": "Main Reservoir Outlet",
+    "PH": 7.2,
+    "Conductivity": 450.5,
+    "Turbidity": 0.8,
+    "ChlorineResidual": 0.5,
+    "Note": "Routine daily sample.",
+    "AdditionalParameters": {},
+    "MeetsStandards": true
+  },
+  {
+    "Id": "b2c3d4e5-f6a7-4890-b234-56789abcdef0",
+    "TimeStamp": "2025-08-19T14:30:00Z",
+    "Location": "Distribution Point A",
+    "PH": 6.8,
+    "Conductivity": 510.2,
+    "Turbidity": 1.2,
+    "ChlorineResidual": 0.45,
+    "Note": "Slightly elevated turbidity due to recent rain.",
+    "AdditionalParameters": {
+      "Hardness": 120.5
+    },
+    "MeetsStandards": true
+  },
+  {
+    "Id": "c3d4e5f6-a7b8-4901-c345-6789abcdef01",
+    "TimeStamp": "2025-08-20T08:00:00Z",
+    "Location": "Treatment Plant Inlet",
+    "PH": 7.5,
+    "Conductivity": 600.0,
+    "Turbidity": 2.5,
+    "ChlorineResidual": 0.0,
+    "Note": "Raw water sample.",
+    "AdditionalParameters": {
+      "Alkalinity": 150.0,
+      "DissolvedOxygen": 8.2
+    },
+    "MeetsStandards": false
+  }
+]

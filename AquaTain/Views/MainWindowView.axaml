@@ -1,0 +1,197 @@
+<sukiUi:SukiWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:vm="using:AquaTain.ViewModels"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:i="https://github.com/projektanker/icons.avalonia"
+                   xmlns:converters="clr-namespace:AquaTain.Converters"
+                   mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="650"
+                   x:Class="AquaTain.Views.MainWindowView"
+                   x:DataType="vm:MainWindowViewModel"
+                   Icon="/Assets/avalonia-logo.ico"
+                   Title="AquaTain">
+    
+    <sukiUi:SukiWindow.Resources>
+        <converters:ButtonCommandParamsConverter x:Key="ButtonToUrlOpenConverterInstance" />
+    </sukiUi:SukiWindow.Resources>
+    
+    <sukiUi:SukiWindow.TitleBarContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Custom TitleBar Context Menu Item" />
+        </ContextMenu>
+    </sukiUi:SukiWindow.TitleBarContextMenu>
+
+    <sukiUi:SukiWindow.Hosts>
+        <sukiUi:SukiToastHost Manager="{Binding ToastManager}" />
+        <sukiUi:SukiDialogHost Manager="{Binding DialogManager}" />
+    </sukiUi:SukiWindow.Hosts>
+
+    <sukiUi:SukiWindow.LogoContent>
+        <i:Icon Width="20"
+                Height="20"
+                VerticalAlignment="Center"
+                Foreground="{DynamicResource SukiPrimaryColor}"
+                Value="fa-solid fa-droplet">
+            <i:Icon.Transitions>
+                <Transitions>
+                    <BrushTransition Property="Foreground" Duration="{DynamicResource ShortAnimationDuration}" />
+                </Transitions>
+            </i:Icon.Transitions>
+        </i:Icon>
+    </sukiUi:SukiWindow.LogoContent>
+
+    <sukiUi:SukiWindow.Hosts>
+        <sukiUi:SukiToastHost Name="ToastHost" />
+    </sukiUi:SukiWindow.Hosts>
+
+    <sukiUi:SukiWindow.MenuItems>
+        <MenuItem Header="Toggles">
+            <MenuItem Header="MenuItem1">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Header="Title Bar"
+                      ToolTip.Tip="Toggles the title bar.">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Change TitleBar Background Visibility">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Right To Left"
+                      ToolTip.Tip="Toggles the right to left.">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+
+            <MenuItem Header="Window Options">
+                <MenuItem.Icon>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                </MenuItem.Icon>
+                <MenuItem Header="Window Lock"
+                          ToolTip.Tip="Toggles minimizing and resizing.">
+                    <MenuItem.Icon>
+                        <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{Binding $parent[sukiUi:SukiWindow].ToggleFullScreen}"
+                          Header="Fullscreen"
+                          ToolTip.Tip="Makes the app fullscreen.">
+                    <MenuItem.Icon>
+                        <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="CanFullscreen"
+                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanFullScreen, Mode=TwoWay}"
+                          ToggleType="CheckBox" />
+
+                <MenuItem Header="CanPin"
+                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanPin, Mode=TwoWay}"
+                          ToggleType="CheckBox" />
+
+                <MenuItem Header="CanMinimize"
+                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanMinimize, Mode=TwoWay}"
+                          ToggleType="CheckBox" />
+
+                <MenuItem Header="CanMaximize"
+                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanMaximize, Mode=TwoWay}"
+                          ToggleType="CheckBox" />
+
+                <MenuItem Header="CanMove"
+                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanMove, Mode=TwoWay}"
+                          ToggleType="CheckBox" />
+
+                <MenuItem Header="CanResize"
+                          IsChecked="{Binding $parent[sukiUi:SukiWindow].CanResize, Mode=TwoWay}"
+                          ToggleType="CheckBox" />
+            </MenuItem>
+
+
+        </MenuItem>
+    </sukiUi:SukiWindow.MenuItems>
+
+    <sukiUi:SukiSideMenu
+        ItemsSource="{Binding Pages}"
+        SelectedItem="{Binding ActivePage}">
+        <sukiUi:SukiSideMenu.Styles>
+            <Style Selector="Image.AppIcon">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0.1" />
+                    </Transitions>
+                </Setter>
+                <Style Selector="^:pointerover">
+                    <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
+                </Style>
+            </Style>
+        </sukiUi:SukiSideMenu.Styles>
+        <sukiUi:SukiSideMenu.ItemTemplate>
+            <DataTemplate>
+                <sukiUi:SukiSideMenuItem Classes="Compact" Header="{Binding DisplayName}">
+                    <sukiUi:SukiSideMenuItem.Icon>
+                        <i:Icon Value="{Binding Icon}" HorizontalAlignment="Center" />
+                    </sukiUi:SukiSideMenuItem.Icon>
+                </sukiUi:SukiSideMenuItem>
+            </DataTemplate>
+        </sukiUi:SukiSideMenu.ItemTemplate>
+        <sukiUi:SukiSideMenu.HeaderContent>
+            <Image Width="80"
+                   Height="80"
+                   Margin="30,10,30,30"
+                   Classes="AppIcon"
+                   IsVisible="True"
+                   ToolTip.Tip="Click To Toggle Top Menu." />
+        </sukiUi:SukiSideMenu.HeaderContent>
+        <sukiUi:SukiSideMenu.FooterContent>
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                <StackPanel.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Command" Value="{Binding OpenUrlCommand}" />
+                    </Style>
+                    <Style Selector="i|Icon">
+                        <Setter Property="Width" Value="25" />
+                        <Setter Property="Height" Value="25" />
+                    </Style>
+                </StackPanel.Styles>
+                <Button Classes="Flat Rounded" ToolTip.Tip="Visit our website for more information.">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource ButtonToUrlOpenConverterInstance}">
+                            <Binding RelativeSource="{RelativeSource Self}" />
+                            <Binding Source="https://github.com/kikipoulet/SukiUI" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <i:Icon Value="fa-solid fa-question" HorizontalAlignment="Center" />
+                </Button>
+                <Button Classes="Flat Rounded" ToolTip.Tip="Follow us on Facebook.">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource ButtonToUrlOpenConverterInstance}">
+                            <Binding RelativeSource="{RelativeSource Self}" />
+                            <Binding Source="https://github.com/kikipoulet/SukiUI" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <i:Icon Value="fa-brands fa-facebook" HorizontalAlignment="Center" />
+                </Button>
+                <Button Classes="Flat Rounded" ToolTip.Tip="Follow us on LinkedIn.">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource ButtonToUrlOpenConverterInstance}">
+                            <Binding RelativeSource="{RelativeSource Self}" />
+                            <Binding Source="https://github.com/kikipoulet/SukiUI" />
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <i:Icon Value="fa-brands fa-linkedin" HorizontalAlignment="Center" />
+                </Button>
+            </StackPanel>
+        </sukiUi:SukiSideMenu.FooterContent>
+    </sukiUi:SukiSideMenu>
+
+
+</sukiUi:SukiWindow>

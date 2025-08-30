@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+
+    <data name="Unit_Length_Meter" xml:space="preserve">
+    <value>mètre</value>
+  </data>
+    <data name="Unit_Length_Foot" xml:space="preserve">
+    <value>pied</value>
+  </data>
+    <data name="Unit_Mass_Kilogram" xml:space="preserve">
+    <value>kilogramme</value>
+  </data>
+    <data name="Unit_Mass_Pound" xml:space="preserve">
+    <value>livre</value>
+  </data>
+    <data name="Unit_Volume_CubicMeter" xml:space="preserve">
+    <value>mètre cube</value>
+  </data>
+    <data name="Unit_Volume_Gallon" xml:space="preserve">
+    <value>gallon</value>
+  </data>
+    <data name="Unit_Pressure_Pascal" xml:space="preserve">
+    <value>pascal</value>
+  </data>
+    <data name="Unit_Pressure_Psi" xml:space="preserve">
+    <value>psi</value>
+  </data>
+    <data name="Unit_Temperature_Celsius" xml:space="preserve">
+    <value>Celsius</value>
+  </data>
+    <data name="Unit_Temperature_Fahrenheit" xml:space="preserve">
+    <value>Fahrenheit</value>
+  </data>
+    <data name="Unit_FlowRate_CubicMeterPerSecond" xml:space="preserve">
+    <value>mètre cube par seconde</value>
+  </data>
+    <data name="Unit_FlowRate_GallonPerMinute" xml:space="preserve">
+    <value>gallon par minute</value>
+  </data>
+
+    <data name="Symbol_Length_Meter" xml:space="preserve">
+    <value>m</value>
+  </data>
+    <data name="Symbol_Length_Foot" xml:space="preserve">
+    <value>pi</value> </data>
+    <data name="Symbol_Mass_Kilogram" xml:space="preserve">
+    <value>kg</value>
+  </data>
+    <data name="Symbol_Mass_Pound" xml:space="preserve">
+    <value>lb</value>
+  </data>
+    <data name="Symbol_Volume_CubicMeter" xml:space="preserve">
+    <value>m³</value>
+  </data>
+    <data name="Symbol_Volume_Gallon" xml:space="preserve">
+    <value>gal</value>
+  </data>
+    <data name="Symbol_Pressure_Pascal" xml:space="preserve">
+    <value>Pa</value>
+  </data>
+    <data name="Symbol_Pressure_Psi" xml:space="preserve">
+    <value>psi</value>
+  </data>
+    <data name="Symbol_Temperature_Celsius" xml:space="preserve">
+    <value>°C</value>
+  </data>
+    <data name="Symbol_Temperature_Fahrenheit" xml:space="preserve">
+    <value>°F</value>
+  </data>
+    <data name="Symbol_FlowRate_CubicMeterPerSecond" xml:space="preserve">
+    <value>m³/s</value>
+  </data>
+    <data name="Symbol_FlowRate_GallonPerMinute" xml:space="preserve">
+    <value>gal/min</value>
+  </data>
+</root>
